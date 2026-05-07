@@ -1,3 +1,15 @@
-######## moodMatch Program ########
+"""
+########~ moodMatch Reads ~########
+"Where your mood meets your next read"
+
+============================================================
+#Group Members: Lydia, Alaa, Labiba 
+============================================================
 
 #Hello this is the program code python file for moodMatch
+
+---- Description and Purpose --- 
+moodMatch is a program that takes in user input for genre preferences based on user's current mood then returns book recommendations based on that. 
+
+
+"""
