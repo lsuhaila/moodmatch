@@ -3,7 +3,7 @@
 ## Team Members: Lydia, Alaa, Labiba
 
 # Purpose
-The purpose of this program is to gain user input on their mood, favourite genre, and favourite author. Based on that, it recommends books back. 
+The purpose of this program is to gain user input on their mood, favorite genre, and favorite author. Based on that, it recommends books back. 
 
 # Description
 MoodMatch Reads is a Python command-line program that recommends books based on your current mood, preferred genre, and favorite author. It fetches real-time data from the Open Library and ranks results by relevance.
