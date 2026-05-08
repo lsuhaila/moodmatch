@@ -22,14 +22,21 @@ The Book Library is generated via Claude AI. Claude AI was prompted to use the t
 The code is set up and stored via lists and functions. The main loop runs the program continously until the user quits. The loop on display for the user gives 5 results at a time. While loop is used extensively.
 
 ## Functions 
-print_welcome(): Displays Welcome message
-print_list(options): Prints a numbered list (mood and genre)
-ask_for_choice(question, options): Prompts user to choose genre, mood, and author by number or word. Can Skip by pressing Enter
-ask_for_author(): Prompts user to enter an author name, can skip by pressing Enter
-ask_yes_no(question)
-rank_books(mood, genre, author):	Scores each matches based on preferences and sorts them
-show_books(scored_books, start_index):	Displays 5 books at a time in descending score order
-main(): Main program that runs the full program with all functions in a loop
+1. print_welcome(): Displays Welcome message
+
+2. print_list(options): Prints a numbered list (mood and genre)
+
+3. ask_for_choice(question, options): Prompts user to choose genre, mood, and author by number or word. Can Skip by pressing Enter
+
+4. ask_for_author(): Prompts user to enter an author name, can skip by pressing Enter
+
+5. ask_yes_no(question)
+
+6. rank_books(mood, genre, author):	Scores each matches based on preferences and sorts them
+
+7. show_books(scored_books, start_index):	Displays 5 books at a time in descending score order
+
+8. main(): Main program that runs the full program with all functions in a loop
 
 ## Scoring System (rank_books)
 - Mood match → +3 points
