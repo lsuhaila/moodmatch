@@ -120,36 +120,34 @@ def print_list(options):
 
 
 ## FUNCTION: ask_for_choice ##
-# - Asks the user to pick something from a list.
-# - Keeps asking until they give a valid answer or skip.
-# - Returns the choice as a string, or "" if they skipped.
+# - Asks the user to pick something from a list. This could be genre or mood. Keeps asking until they give a valid answer or skip. 
 
 def ask_for_choice(question, options):
-    # Show the question and the list of options
+    # Show the question and the list of options. Options are what is in the genre and mood lists. 
     print(question)
     print_list(options)
 
     # Loop until we get a valid answer
     while True:
-        answer = input("Type a number, the name, or press Enter to skip: ")
-        # strip removes extra spaces, lower makes it case-insensitive
+        answer = input("Choose a number, a word, or press Enter to skip: ")
+        # .strip() removes extra spaces and .lower() makes it case-insensitive
         answer = answer.strip().lower()
 
-        # If they pressed Enter, that means skip
+        # when Enter pressed --> Skip
         if answer == "":
             return ""
 
-        # If they typed a number, check that it's in range
+        # If number chosen, check that the chosen number is in range
         if answer.isdigit():
+            #change answer from string to integer to check if it is in range of the options
             number = int(answer)
             if number >= 1 and number <= len(options):
                 # number 1 means index 0, so we subtract 1
                 return options[number - 1]
             else:
-                print("Invalid input. Please pick a number between 1 and "
-                      + str(len(options)) + ".")
+                print("Invalid input. Please pick a number between 1 and " + str(len(options)) + ".")
 
-        # If they typed a word, check that it matches an option
+        # If word chosen, check that the chosen word matches an option
         elif answer in options:
             return answer
 
@@ -159,23 +157,18 @@ def ask_for_choice(question, options):
                   "the name of an option, or press Enter to skip.")
 
 
-# ---------------------------------------------------------------
-# FUNCTION: ask_for_author
-# ---------------------------------------------------------------
-# Asks the user for their favorite author. This is free text
-# (we can't list every author in the world!).
-# Returns the name they typed, or "" if they skipped.
+
+## FUNCTION: ask_for_author ##
+# - Asks the user for their favorite author. Returns the name they typed, or "" if they skipped.
 
 def ask_for_author():
     answer = input("\nFavorite author? (type a name or press Enter to skip): ")
     return answer.strip()
 
 
-# ---------------------------------------------------------------
-# FUNCTION: ask_yes_no
-# ---------------------------------------------------------------
-# Asks a yes/no question and keeps asking until we get a valid
-# answer. Returns True for yes, False for no.
+## FUNCTION: ask_yes_no ##
+# Asks a yes/no question and keeps asking until we get a valid answer. Returns True for yes, False for no.
+# This is for when we ask 'would you like 5 more recommendations' or 'try a new search' 
 
 def ask_yes_no(question):
     while True:
@@ -188,17 +181,14 @@ def ask_yes_no(question):
             print("Invalid input. Please type 'yes' or 'no'.")
 
 
-# ---------------------------------------------------------------
-# FUNCTION: rank_books
-# ---------------------------------------------------------------
-# This is the "Filter books based on preferences" + "Rank matches
-# by relevance" boxes from the flowchart.
-# Goes through every book and gives it a score. Higher score
-# means a better match for the user.
+
+## FUNCTION: rank_books ##
+# - This function creates the list of relevant books and ranks them based on user preference. This is the "Filter books based on preferences" + "Rank matches by relevance" boxes from the flowchart.
+# - Goes through every book and gives it a score. Higher score means a better match for the user.
 
 def rank_books(mood, genre, author):
-    # We make a new list of [score, book] for each book
-    scored_books = []
+    # New list to hold matched books with score in the format:[score, title, author, genre, rating] 
+    scored_books = [] 
 
     for book in BOOKS:
         # Get the parts of this book
@@ -220,35 +210,33 @@ def rank_books(mood, genre, author):
             score = score + 2
 
         # Add 3 points if the author matches
-        # We use lower() so capital letters don't matter
-        # We use "in" so partial names work (typing "Tolkien"
-        # matches "J.R.R. Tolkien")
         if author != "":
+             # use .lower() to make it case insensitive
             if author.lower() in book_author.lower():
                 score = score + 3
 
-        # Only keep this book if it actually matched something
+        # Only keep book that matches at least one preference 
         if score > 0:
-            # Add the rating as a tie-breaker
-            # (so higher-rated books come first when scores are tied)
+            # if the score for 2 or more books are the same, then the rating of individual books are added to the score to break the tie. 
             score = score + rating
 
             # Save it as [score, title, author, genre, rating]
             scored_books.append([score, title, book_author, book_genre, rating])
 
-    # Sort the list so the highest score comes first
-    # reverse=True means biggest first instead of smallest first
-    scored_books.sort(reverse=True)
+    # Sort the list from smallest to biggest first.
+    scored_books.sort()
+
+    # [::-1] slice used to flip the sorted list to make the higher rated one come first. 
+    scored_books = scored_books[::-1]
 
     return scored_books
 
 
-# ---------------------------------------------------------------
-# FUNCTION: show_books
-# ---------------------------------------------------------------
-# Prints a page of 5 books to the screen.
-# start_index is which book to start at (0 = first page,
-# 5 = second page, 10 = third page, etc.)
+
+## FUNCTION: show_books ##
+# - Prints a page of 5 books to the screen.
+# - start_index is which book to start at (0 = first page,
+# - 5 = second page, 10 = third page, etc.)
 
 def show_books(scored_books, start_index):
     print()
