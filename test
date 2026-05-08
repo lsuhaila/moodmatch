@@ -235,17 +235,14 @@ def rank_books(mood, genre, author):
 
 ## FUNCTION: show_books ##
 # - Prints a page of 5 books to the screen.
-# - start_index is which book to start at (0 = first page,
-# - 5 = second page, 10 = third page, etc.)
+# - start_index is which book to start at (0 = first page, 5 = second page, 10 = third page, etc.)
 
 def show_books(scored_books, start_index):
-    print()
-    print("-" * 50)
-    print("  Your matches:")
-    print("-" * 50)
+    print("\n" + "-" * 50 + "\n  Your matches:\n" + "-" * 50)
 
     # Show 5 books starting at start_index
     end_index = start_index + 5
+    # But if fewer than 5 books are left, stop at the end of the list
     if end_index > len(scored_books):
         end_index = len(scored_books)
 
@@ -256,41 +253,32 @@ def show_books(scored_books, start_index):
         author = book[2]
         genre = book[3]
         rating = book[4]
-        print()
-        print("  " + str(i + 1) + ". " + title)
-        print("     by " + author)
-        print("     Genre: " + genre + "   Rating: " + str(rating) + " / 5")
+        print("\n  " + str(i + 1) + ". " + title + "\n     by " + author + "\n     Genre: " + genre + "   Rating: " + str(rating) + " / 5")
 
     print()
 
 
-# ---------------------------------------------------------------
-# FUNCTION: main
-# ---------------------------------------------------------------
-# The main program. Puts everything together and follows the
-# flowchart from start to end.
+
+## FUNCTION: main program ##
+# - The main program. Puts everything together and follows the flowchart from start to end.
 
 def main():
     print_welcome()
 
     # The big outer loop - keeps running until the user quits.
-    # This lets the user start a new search with new preferences
-    # without restarting the program.
+    # This lets the user start a new search with new preferences without restarting the program.
     while True:
 
         # ---- STEP 1: Ask for preferences ----
-        # This is the "Prompt user to enter mood, genre, or favorite
-        # author" box in the flowchart.
-        print("Step 1: Tell us your preferences")
-        print("(You can skip any of these by pressing Enter)")
-        print()
+        # This is the "Prompt user to enter mood, genre, or favorite author" box in the flowchart.
+        print("Step 1: Tell us your preferences\n(You can skip any of these by pressing Enter)\n")
 
+        #asking the questions for user selection on mood, genre, and author. 
         mood = ask_for_choice("\nWhat mood are you in?", MOODS)
         genre = ask_for_choice("\nWhat genre do you want?", GENRES)
         author = ask_for_author()
 
-        # The "Input Valid?" diamond - the user must answer at least
-        # one question, otherwise we have nothing to search for.
+        # "Input Valid?" diamond - the user must answer at least one question
         if mood == "" and genre == "" and author == "":
             print()
             print("Invalid input. Please answer at least one question")
