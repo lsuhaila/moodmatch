@@ -1,4 +1,4 @@
-# moodmatch
+# ~ MOOD MATCH ~
 
 ## Team Members: Lydia, Alaa, Labiba
 
