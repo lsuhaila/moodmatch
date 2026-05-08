@@ -1,0 +1,403 @@
+"""
+Mood Match Reads
+Where your mood meets your next read.
+
+Authors: Lydia Morgan, Alaa Abdelrahman, Labiba Rahman Suhaila
+Course:  Healthcare Info Systems Devlpm - Section 01
+Term:    Spring Semester 2026
+
+This program asks the user about their mood, favorite genre,
+and favorite author, then recommends books from our book list.
+
+It follows the flowchart from our presentation:
+    Start -> Welcome -> Ask preferences -> Validate input
+         -> Filter and rank books -> Show top 5
+         -> Ask "more or new search?" -> Loop or End
+
+To run the program, type this in your terminal:
+    python3 mood_match_reads.py
+"""
+
+
+# ---------------------------------------------------------------
+# THE BOOK LIST
+# ---------------------------------------------------------------
+# Each book is a list with 5 things in this order:
+#     [title, author, genre, mood, rating]
+# We picked these books from popular real books with their
+# real ratings. We can add more books any time by adding a
+# new line to this list.
+
+BOOKS = [
+    # Romance
+    ["Pride and Prejudice",      "Jane Austen",          "romance",  "romantic",    4.28],
+    ["The Notebook",             "Nicholas Sparks",      "romance",  "sad",         4.16],
+    ["Beach Read",               "Emily Henry",          "romance",  "happy",       4.00],
+    ["It Ends with Us",          "Colleen Hoover",       "romance",  "emotional",   4.16],
+    ["The Hating Game",          "Sally Thorne",         "romance",  "happy",       3.97],
+
+    # Fantasy
+    ["The Hobbit",               "J.R.R. Tolkien",       "fantasy",  "adventurous", 4.28],
+    ["Harry Potter",             "J.K. Rowling",         "fantasy",  "magical",     4.47],
+    ["A Court of Thorns and Roses", "Sarah J. Maas",     "fantasy",  "romantic",    4.18],
+    ["The Name of the Wind",     "Patrick Rothfuss",     "fantasy",  "magical",     4.55],
+    ["Mistborn",                 "Brandon Sanderson",    "fantasy",  "adventurous", 4.49],
+
+    # Mystery
+    ["Gone Girl",                "Gillian Flynn",        "mystery",  "dark",        4.10],
+    ["The Silent Patient",       "Alex Michaelides",     "mystery",  "suspenseful", 4.18],
+    ["And Then There Were None", "Agatha Christie",      "mystery",  "suspenseful", 4.30],
+    ["The Girl on the Train",    "Paula Hawkins",        "mystery",  "dark",        3.92],
+
+    # Sci-fi
+    ["Dune",                     "Frank Herbert",        "scifi",    "adventurous", 4.26],
+    ["Project Hail Mary",        "Andy Weir",            "scifi",    "thoughtful",  4.52],
+    ["1984",                     "George Orwell",        "scifi",    "dark",        4.19],
+    ["The Martian",              "Andy Weir",            "scifi",    "adventurous", 4.41],
+
+    # Classic
+    ["To Kill a Mockingbird",    "Harper Lee",           "classic",  "thoughtful",  4.28],
+    ["The Great Gatsby",         "F. Scott Fitzgerald",  "classic",  "sad",         3.93],
+    ["Little Women",             "Louisa May Alcott",    "classic",  "cozy",        4.19],
+    ["Jane Eyre",                "Charlotte Bronte",     "classic",  "romantic",    4.15],
+
+    # Self-help
+    ["Atomic Habits",            "James Clear",          "selfhelp", "uplifting",   4.36],
+    ["The 7 Habits of Highly Effective People", "Stephen Covey", "selfhelp", "uplifting", 4.16],
+
+    # Horror
+    ["The Shining",              "Stephen King",         "horror",   "dark",        4.27],
+    ["Mexican Gothic",           "Silvia Moreno-Garcia", "horror",   "dark",        3.66],
+
+    # Young Adult
+    ["The Fault in Our Stars",   "John Green",           "ya",       "sad",         4.15],
+    ["Six of Crows",             "Leigh Bardugo",        "ya",       "adventurous", 4.46],
+    ["The Hunger Games",         "Suzanne Collins",      "ya",       "adventurous", 4.34],
+    ["Eleanor & Park",           "Rainbow Rowell",       "ya",       "romantic",    4.06],
+]
+
+
+# Lists of valid options the user can pick from.
+# We make these by hand so the menus are easy to control.
+
+MOODS = [
+    "adventurous",
+    "cozy",
+    "dark",
+    "emotional",
+    "happy",
+    "magical",
+    "romantic",
+    "sad",
+    "suspenseful",
+    "thoughtful",
+    "uplifting",
+]
+
+GENRES = [
+    "romance",
+    "fantasy",
+    "mystery",
+    "scifi",
+    "classic",
+    "selfhelp",
+    "horror",
+    "ya",
+]
+
+
+# ---------------------------------------------------------------
+# FUNCTION: print_welcome
+# ---------------------------------------------------------------
+# Prints the welcome message at the start of the program.
+# This is the "Print Welcome message" box in our flowchart.
+
+def print_welcome():
+    print("=" * 50)
+    print("         MOOD MATCH READS")
+    print("   Where your mood meets your next read.")
+    print("=" * 50)
+    print()
+    print("Hi! Welcome to Mood Match Reads.")
+    print("Tell us a bit about what you're in the mood for")
+    print("and we'll find your next favorite book.")
+    print()
+
+
+# ---------------------------------------------------------------
+# FUNCTION: print_list
+# ---------------------------------------------------------------
+# Prints a list of options with numbers next to them.
+# We use this for both moods and genres.
+
+def print_list(options):
+    for i in range(len(options)):
+        # i starts at 0, so we add 1 to make it user-friendly
+        print("  " + str(i + 1) + ". " + options[i])
+
+
+# ---------------------------------------------------------------
+# FUNCTION: ask_for_choice
+# ---------------------------------------------------------------
+# Asks the user to pick something from a list.
+# Keeps asking until they give a valid answer or skip.
+# Returns the choice as a string, or "" if they skipped.
+
+def ask_for_choice(question, options):
+    # Show the question and the list of options
+    print(question)
+    print_list(options)
+
+    # Loop until we get a valid answer
+    while True:
+        answer = input("Type a number, the name, or press Enter to skip: ")
+        # strip removes extra spaces, lower makes it case-insensitive
+        answer = answer.strip().lower()
+
+        # If they pressed Enter, that means skip
+        if answer == "":
+            return ""
+
+        # If they typed a number, check that it's in range
+        if answer.isdigit():
+            number = int(answer)
+            if number >= 1 and number <= len(options):
+                # number 1 means index 0, so we subtract 1
+                return options[number - 1]
+            else:
+                print("Invalid input. Please pick a number between 1 and "
+                      + str(len(options)) + ".")
+
+        # If they typed a word, check that it matches an option
+        elif answer in options:
+            return answer
+
+        # Anything else is invalid
+        else:
+            print("Invalid input. Please type a number from the list, "
+                  "the name of an option, or press Enter to skip.")
+
+
+# ---------------------------------------------------------------
+# FUNCTION: ask_for_author
+# ---------------------------------------------------------------
+# Asks the user for their favorite author. This is free text
+# (we can't list every author in the world!).
+# Returns the name they typed, or "" if they skipped.
+
+def ask_for_author():
+    answer = input("\nFavorite author? (type a name or press Enter to skip): ")
+    return answer.strip()
+
+
+# ---------------------------------------------------------------
+# FUNCTION: ask_yes_no
+# ---------------------------------------------------------------
+# Asks a yes/no question and keeps asking until we get a valid
+# answer. Returns True for yes, False for no.
+
+def ask_yes_no(question):
+    while True:
+        answer = input(question).strip().lower()
+        if answer == "yes" or answer == "y":
+            return True
+        elif answer == "no" or answer == "n":
+            return False
+        else:
+            print("Invalid input. Please type 'yes' or 'no'.")
+
+
+# ---------------------------------------------------------------
+# FUNCTION: rank_books
+# ---------------------------------------------------------------
+# This is the "Filter books based on preferences" + "Rank matches
+# by relevance" boxes from the flowchart.
+# Goes through every book and gives it a score. Higher score
+# means a better match for the user.
+
+def rank_books(mood, genre, author):
+    # We make a new list of [score, book] for each book
+    scored_books = []
+
+    for book in BOOKS:
+        # Get the parts of this book
+        title = book[0]
+        book_author = book[1]
+        book_genre = book[2]
+        book_mood = book[3]
+        rating = book[4]
+
+        # Start the score at 0
+        score = 0
+
+        # Add 3 points if the mood matches
+        if mood != "" and book_mood == mood:
+            score = score + 3
+
+        # Add 2 points if the genre matches
+        if genre != "" and book_genre == genre:
+            score = score + 2
+
+        # Add 3 points if the author matches
+        # We use lower() so capital letters don't matter
+        # We use "in" so partial names work (typing "Tolkien"
+        # matches "J.R.R. Tolkien")
+        if author != "":
+            if author.lower() in book_author.lower():
+                score = score + 3
+
+        # Only keep this book if it actually matched something
+        if score > 0:
+            # Add the rating as a tie-breaker
+            # (so higher-rated books come first when scores are tied)
+            score = score + rating
+
+            # Save it as [score, title, author, genre, rating]
+            scored_books.append([score, title, book_author, book_genre, rating])
+
+    # Sort the list so the highest score comes first
+    # reverse=True means biggest first instead of smallest first
+    scored_books.sort(reverse=True)
+
+    return scored_books
+
+
+# ---------------------------------------------------------------
+# FUNCTION: show_books
+# ---------------------------------------------------------------
+# Prints a page of 5 books to the screen.
+# start_index is which book to start at (0 = first page,
+# 5 = second page, 10 = third page, etc.)
+
+def show_books(scored_books, start_index):
+    print()
+    print("-" * 50)
+    print("  Your matches:")
+    print("-" * 50)
+
+    # Show 5 books starting at start_index
+    end_index = start_index + 5
+    if end_index > len(scored_books):
+        end_index = len(scored_books)
+
+    for i in range(start_index, end_index):
+        book = scored_books[i]
+        # book is [score, title, author, genre, rating]
+        title = book[1]
+        author = book[2]
+        genre = book[3]
+        rating = book[4]
+        print()
+        print("  " + str(i + 1) + ". " + title)
+        print("     by " + author)
+        print("     Genre: " + genre + "   Rating: " + str(rating) + " / 5")
+
+    print()
+
+
+# ---------------------------------------------------------------
+# FUNCTION: main
+# ---------------------------------------------------------------
+# The main program. Puts everything together and follows the
+# flowchart from start to end.
+
+def main():
+    print_welcome()
+
+    # The big outer loop - keeps running until the user quits.
+    # This lets the user start a new search with new preferences
+    # without restarting the program.
+    while True:
+
+        # ---- STEP 1: Ask for preferences ----
+        # This is the "Prompt user to enter mood, genre, or favorite
+        # author" box in the flowchart.
+        print("Step 1: Tell us your preferences")
+        print("(You can skip any of these by pressing Enter)")
+        print()
+
+        mood = ask_for_choice("\nWhat mood are you in?", MOODS)
+        genre = ask_for_choice("\nWhat genre do you want?", GENRES)
+        author = ask_for_author()
+
+        # The "Input Valid?" diamond - the user must answer at least
+        # one question, otherwise we have nothing to search for.
+        if mood == "" and genre == "" and author == "":
+            print()
+            print("Invalid input. Please answer at least one question")
+            print("so we can find a book for you.")
+            print()
+            continue  # go back to the top and ask again
+
+        # ---- STEP 2: Rank the books ----
+        # This is the "Filter books based on preferences" and
+        # "Rank matches by relevance" boxes.
+        scored_books = rank_books(mood, genre, author)
+
+        # If no books matched, ask if they want to try again
+        if len(scored_books) == 0:
+            print()
+            print("No books matched your preferences. Try different ones!")
+            print()
+            if ask_yes_no("Try a new search? (yes/no): "):
+                continue  # ask again
+            else:
+                # Print goodbye and end the program
+                print()
+                print("=" * 50)
+                print("  Thanks for using Mood Match Reads!")
+                print("  Happy reading!")
+                print("=" * 50)
+                return
+
+        # ---- STEP 3: Show 5 books at a time ----
+        # This is the "Return top 5 recommendations" box and the
+        # loop for "Display next 5 recommendations".
+        start_index = 0
+        showing_books = True
+        while showing_books:
+            show_books(scored_books, start_index)
+            start_index = start_index + 5
+
+            # Check if there are more books to show
+            if start_index >= len(scored_books):
+                print("That's all the books we found!")
+                showing_books = False
+            else:
+                # The "More recommendations?" diamond
+                if ask_yes_no("Want to see 5 more? (yes/no): "):
+                    pass  # loop back and show the next 5
+                else:
+                    showing_books = False
+
+        # ---- STEP 4: New search or quit? ----
+        # This is the second decision diamond from the new flowchart:
+        # "more recs or new selection of preferences?"
+        print()
+        print("What would you like to do next?")
+        print("  1. Start a new search with different preferences")
+        print("  2. Quit Mood Match Reads")
+
+        # Loop until they pick 1 or 2
+        while True:
+            choice = input("Pick 1 or 2: ").strip()
+            if choice == "1":
+                print()
+                break  # break out of this small loop, big loop continues
+            elif choice == "2":
+                # Print goodbye and end the program
+                print()
+                print("=" * 50)
+                print("  Thanks for using Mood Match Reads!")
+                print("  Happy reading!")
+                print("=" * 50)
+                return
+            else:
+                print("Invalid input. Please type 1 or 2.")
+
+
+# ---------------------------------------------------------------
+# This runs the main() function when we run the file.
+# Without this, the program would do nothing!
+# ---------------------------------------------------------------
+main()
