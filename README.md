@@ -8,7 +8,7 @@ The purpose of this program is to gain user input on their mood, favourite genre
 # Description
 MoodMatch Reads is a Python command-line program that recommends books based on your current mood, preferred genre, and favorite author. It fetches real-time data from the Open Library and ranks results by relevance.
 
-## Book Library
+# Book Library
 The Book Library is generated via Claude AI. Claude AI was prompted to use the top books on openlibrary.ord with the highest rankings. Each book consists of 5 fields: [title, author, genre, mood, rating]
 
 ## How It Works
@@ -36,3 +36,4 @@ main(): Main program that runs the full program with all functions in a loop
 - Genre match → +2 points
 - Author match → +3 points
 
+thanks!
