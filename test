@@ -278,39 +278,27 @@ def main():
         genre = ask_for_choice("\nWhat genre do you want?", GENRES)
         author = ask_for_author()
 
-        # "Input Valid?" diamond - the user must answer at least one question
+        ## "Input Valid?" diamond - the user must answer at least one question
         if mood == "" and genre == "" and author == "":
-            print()
-            print("Invalid input. Please answer at least one question")
-            print("so we can find a book for you.")
-            print()
-            continue  # go back to the top and ask again
+            print("\nInvalid input. Please answer at least one question")
+            print("so we can find a book for you.\n")
+        else:
 
         # ---- STEP 2: Rank the books ----
-        # This is the "Filter books based on preferences" and
-        # "Rank matches by relevance" boxes.
+        # This is the "Filter books based on preferences" and "Rank matches by relevance" boxes.
         scored_books = rank_books(mood, genre, author)
 
         # If no books matched, ask if they want to try again
         if len(scored_books) == 0:
-            print()
-            print("No books matched your preferences. Try different ones!")
-            print()
-            if ask_yes_no("Try a new search? (yes/no): "):
-                continue  # ask again
-            else:
-                # Print goodbye and end the program
-                print()
-                print("=" * 50)
-                print("  Thanks for using Mood Match Reads!")
-                print("  Happy reading!")
-                print("=" * 50)
+            print("\nNo books matched your preferences. Try different ones!\n")
+            if not ask_yes_no("Try a new search? (yes/no): "):
+                print("\n" + "=" * 50 + "\n  Thanks for using Mood Match Reads!\n  Happy reading!\n" + "=" * 50 + "\n")
                 return
 
         # ---- STEP 3: Show 5 books at a time ----
-        # This is the "Return top 5 recommendations" box and the
-        # loop for "Display next 5 recommendations".
+        # This is the "Return top 5 recommendations" box and the loop for "Display next 5 recommendations".
         start_index = 0
+        # Controls the while loop
         showing_books = True
         while showing_books:
             show_books(scored_books, start_index)
@@ -318,23 +306,19 @@ def main():
 
             # Check if there are more books to show
             if start_index >= len(scored_books):
+            # Notify the user and stop the loop
                 print("That's all the books we found!")
                 showing_books = False
             else:
-                # The "More recommendations?" diamond
-                if ask_yes_no("Want to see 5 more? (yes/no): "):
-                    pass  # loop back and show the next 5
-                else:
+                # "More recommendations?" diamond - ask if they want the next 5
+                answer = ask_yes_no("Want to see 5 more? (yes/no): ")
+                if answer == False:
+                    # User said no - stop the loop
                     showing_books = False
 
         # ---- STEP 4: New search or quit? ----
-        # This is the second decision diamond from the new flowchart:
-        # "more recs or new selection of preferences?"
-        print()
-        print("What would you like to do next?")
-        print("  1. Start a new search with different preferences")
-        print("  2. Quit Mood Match Reads")
-
+        # This is the second decision diamond from the new flowchart: "more recs or new selection of preferences?"
+        print("\nWhat would you like to do next?\n  1. Start a new search with different preferences\n  2. Quit Mood Match Reads")
         # Loop until they pick 1 or 2
         while True:
             choice = input("Pick 1 or 2: ").strip()
@@ -342,19 +326,9 @@ def main():
                 print()
                 break  # break out of this small loop, big loop continues
             elif choice == "2":
-                # Print goodbye and end the program
-                print()
-                print("=" * 50)
-                print("  Thanks for using Mood Match Reads!")
-                print("  Happy reading!")
-                print("=" * 50)
+                print("\n" + "=" * 50 + "\n  Thanks for using Mood Match Reads!\n  Happy reading!\n" + "=" * 50)
                 return
             else:
                 print("Invalid input. Please type 1 or 2.")
 
-
-# ---------------------------------------------------------------
-# This runs the main() function when we run the file.
-# Without this, the program would do nothing!
-# ---------------------------------------------------------------
 main()
